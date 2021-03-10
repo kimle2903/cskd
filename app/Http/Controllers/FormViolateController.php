@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\FormViolate;
 use App\Http\Requests\StoreFormViolateRequest;
 use App\Http\Requests\UpdateFormViolateRequest;
+use App\Violate;
 use Illuminate\Http\Request;
 
 class FormViolateController extends Controller
@@ -37,21 +38,32 @@ class FormViolateController extends Controller
 
     public function destroy( $id){
         $form = FormViolate::find($id);
-        if(isset($form) && FormViolate::destroy($id)){
-             return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
+        if(Violate::where('form_violate_id', $id)->first()){
+            return response()->json(['message'=>"Hình thức xử lý vi phạm đã nằm trong kiểm tra và xử lý vi phạm.", 'status'=>204]);
         }else{
-             return response()->json(['message'=>"Xóa thất bại.", 'status'=>200]);
+            FormViolate::destroy($id);
+            return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
         }
+       
     }
 
     public function multiDelete(Request $request){
         $listId = $request->listId;
         $list= explode(',', $listId);
-         if(FormViolate::whereIn('id', $list)->delete()){
+        $check = 0;
+        foreach($list as $item){
+            $data = Violate::where('form_violate_id', $item)->get();
+            if(isset($data)&& count($data)> 0){
+               $check++;
+            }
+        }
+        if($check == 0){
+            FormViolate::whereIn('id', $list)->delete();
             return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
         }else{
-            return response()->json(['message'=>'Xóa thất bại.', 'status'=>204]);
-        }
+            return response()->json(['message'=>'Linh vực đầu tư đã nằm trong kiểm tra và xử lý vi phạm.', 'status'=>204]);
+        }   
+       
 
     }
 

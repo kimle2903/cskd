@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Busines;
 use App\Http\Requests\StoreTypeInvestmentRequest;
 use App\Http\Requests\UpdateTypeInvestmentsRequest;
 use App\TypeInvestment;
@@ -36,22 +37,37 @@ class TypeInvestmentController extends Controller
     }
 
     public function destroy( $id){
-         $form = TypeInvestment::find($id);
-        if(isset($form) && TypeInvestment::destroy($id)){
-             return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
-        }else{
-             return response()->json(['message'=>"Xóa thất bại.", 'status'=>200]);
+        $form = TypeInvestment::find($id);
+        
+        if ( Busines::where('type_investment_id', $id)->first() ) {
+            return  response()->json(['status'=>"204","message"=>"Loại hình đầu tư đã tồn tại trong cơ sở kinh doanh."]);
+        } else{
+            $id = TypeInvestment::find($id);
+            if(isset($id) && $id->delete()){
+                return response()->json(['status'=>"200","message"=>"Xóa thành công"]);
+            }else{
+                return response()->json(['status'=>"204","message"=>"Xóa không thành công!"]);
+            }
         }
     }
 
     public function multiDelete(Request $request){
         $listId = $request->listId;
         $list= explode(',', $listId);
-         if(TypeInvestment::whereIn('id', $list)->delete()){
+        $check = 0;
+        foreach($list as $item){
+            $data = Busines::where('type_investment_id', $item)->get();
+            if(isset($data) && count($data)> 0){
+                $check++;
+            }
+        }
+        if($check == 0){
+            TypeInvestment::whereIn('id', $list)->delete();
             return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
         }else{
-            return response()->json(['message'=>'Xóa thất bại.', 'status'=>204]);
+            return response()->json(['message'=>'Loại hình đầu tư đã tồn tại trong cơ sở kinh doanh.', 'status'=>204]);
         }
+
     }
 
     public  function getDataAjax(Request $request){

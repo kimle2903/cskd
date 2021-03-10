@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Busines;
 use App\District;
 use App\Http\Requests\StoreWardRequest;
 use App\Http\Requests\UpdateWardRequest;
@@ -43,8 +44,15 @@ class WardController extends Controller
 
     public function destroy($id){
         $ward = Ward::find($id);
-        if(isset($ward) && Ward::destroy($id)){
-              return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
+        if(isset($ward)){
+             $data = Busines::where('ward_id', $id)->get();
+             if(isset($data) && count($data)> 0){
+                  return response()->json(['message'=>"Phường xã đã nằm trong cơ sở kinh doanh.", 'status'=>204]);
+             }else{
+                $ward->delete();
+                return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
+             }
+            
         }else{
             return response()->json(['message'=>"Xóa không thành công.", 'status'=>204]);
         }
@@ -54,11 +62,20 @@ class WardController extends Controller
         if(isset($request->listId)){
             $listId = $request->listId;
             $list = explode(',',$listId);
-            if(Ward::whereIn('id', $list)->delete()){
-                  return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
-            }else{
-                 return response()->json(['message'=>"Xóa không thành công.", 'status'=>204]);
+            $check = 0;
+            foreach($list as $item){
+                $data = Busines::where('ward_id', $item)->get();
+                if(isset($data) && count($data)> 0){
+                    $check++;
+                }
             }
+            if($check == 0){
+                Ward::whereIn('id', $list)->delete();
+                return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
+            }else{
+                return response()->json(['message'=>'Cấp xử lý đã nằm trong kiểm tra và xử lý vi phạm.', 'status'=>204]);
+            }
+            
         }
     }
 

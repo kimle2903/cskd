@@ -295,13 +295,11 @@
                         if(data['status'] == 200){
                              $("#notification .message").text(data['message']);
                         }else{
-                            $("#notification .message").text("Thêm mới thất bại.");
+                            $("#notification .message").text(data['message']);
                         }
                     }, 
                     error: function(data){
-                        $.each(data.responseJSON.errors, function(index, value){
-                            $("#addModal .alert-"+index).html(value)
-                        })
+                        $("#notification .message").text(data['message']);
                     }
                 })
             })
@@ -358,7 +356,7 @@
                         if(data['status'] == 200){
                             $("#notification .message").text(data['message']);
                         }else{
-                            $("#notification .message").text('Xóa thất bại');
+                            $("#notification .message").text(data['message']);
                         }
                     }, 
                     error: function(data){

@@ -110,8 +110,15 @@ class DepartmentController extends Controller
      */
     public function destroy($id)
     {
-        if(isset($id) && Department::destroy($id)){
-            return response()->json(['message'=>"Xóa thành công", 'status'=>200]);
+        $data = Department::find($id);
+        if(isset($data)){
+            if(User::where('department_id', $id)->first()){
+                  return response()->json(['message'=>"Đơn vị đã tồn tại trong người dùng", 'status'=>204]);
+            }else{
+                $data->delete();
+                 return response()->json(['message'=>"Xóa thành công", 'status'=>200]);
+            }
+           
         }else{
             return response()->json(['message'=>"Xóa thất bại", 'status'=>404]);
         }
@@ -128,9 +135,21 @@ class DepartmentController extends Controller
     public function multiDelete(Request $request){
       
         if(isset($request->listId)){
-            $arrId = explode(",",$request->listId );
-            Department::whereIn('id',$arrId )->delete();
-            return response()->json(['message'=>"Xóa thành công", 'status'=>200]);
+            $list = explode(",",$request->listId );
+            $check = 0;
+            foreach($list as $item){
+                $data = User::where('department_id', $item)->get();
+                if(count($data)> 0){
+                    $check++;
+                }
+            }
+            if($check == 0){
+                Department::whereIn('id', $list)->delete();
+                return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
+            }else{
+                return response()->json(['message'=>'Người dùng đã nằm trong kiểm tra và xử lý vi phạm.', 'status'=>204]);
+            }   
+            
         }else{
             return response()->json(['message'=>"Xóa thất bại", 'status'=>404]);
         }

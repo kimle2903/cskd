@@ -288,14 +288,14 @@
                     success:function(data){
                         $('#notification').modal('show');
                         if(data['status'] == 200){
-                            $(".modal-body .message").text("Xóa thành công.");
+                            $(".modal-body .message").text(data['message']);
                         }else{
-                             $(".modal-body .message").text("Xóa thất bại.");
+                             $(".modal-body .message").text(data['message']);
                         }
                     }, 
                     error: function(data){
                         $('#notification').modal('show');
-                        $(".modal-body .message").text("Xóa thất bại.");
+                        $(".modal-body .message").text(data['message']);
                     }
                 })
 
@@ -320,15 +320,15 @@
                 success: function(data){
                     $("#notification").modal('show');
                     if(data['status'] == 200){
-                        $(".modal-body .message").text("Xóa thành công.");
+                        $(".modal-body .message").text(data['message']);
                     }else{
-                        $(".modal-body .message").text("Xóa thất bại.");
+                        $(".modal-body .message").text(data['message']);
                     }
                     
                 }, 
                 error: function(data){
                     $("#notification").modal('show');
-                    $(".modal-body .message").text("Xóa thất bại.");
+                    $(".modal-body .message").text(data['message']);
                 }
             })
             

@@ -219,8 +219,8 @@
                         }
                     }, 
                     error: function(data){
-                        $.each(data.responseJSON.errors, function(index, value){
-                            $("#addModal .alert-"+index).html(value)
+                        $.each(data.responseJSON.message, function(index, value){
+                            $("#notification .message").html("Một cơ sở kinh doanh đang sử dụng loại hình này, không thể xóa");
                         })
                     }
                 })
@@ -277,12 +277,15 @@
                         $("#notification").modal('show');
                         if(data['status'] == 200){
                             $("#notification .message").text(data['message']);
-                        }else{
+                        }else if(data['status'] == 204){
                             $("#notification .message").text(data['message']);
                         }
                     }, 
                     error: function(data){
-                        $("#notification .message").text('Xóa thất bại');
+                        console.log(data);
+                        $.each(data.responseJSON.errors, function(index, value){
+                            $("#d .alert-"+index).html(value)
+                        })
                     }
                 })
 

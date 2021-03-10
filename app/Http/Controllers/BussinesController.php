@@ -7,6 +7,7 @@ use App\District;
 use App\Http\Requests\StoreBusinesRequest;
 use App\TypeInvestment;
 use App\User;
+use App\Violate;
 use App\Ward;
 use Illuminate\Http\Request;
 
@@ -86,10 +87,7 @@ class BussinesController extends Controller
     public function destroy($id){
         $busines = Busines::find($id);
         if(isset($busines)){
-            $user_id = $busines->user_id;
-            if(User::find($user_id)){
-                  User::destroy($user_id);
-            }
+            $violate = Violate::where("busines_id",$id)->delete();
             $busines->delete();
              return response()->json(['message'=>"Xóa thành công", 'status'=>200]);
         }else{
@@ -123,17 +121,8 @@ class BussinesController extends Controller
     public function multiDelete(Request  $request){
         $listId = $request->listId;
         $list = explode(',',$listId);
-        foreach($list as $value){
-            $busines = Busines::find($value);
-            if(isset($busines)){
-                $user_id = $busines->user_id;
-                if(User::find($user_id)){
-                    User::destroy($user_id);
-                }
-                $busines->delete();
-            }
-            
-        }
+        Violate::whereIn('busines_id',$list )->delete();
+        Busines::whereIn('id', $list)->delete();
         
         return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
         

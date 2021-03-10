@@ -245,7 +245,7 @@
                     }
                 });
                 $.ajax({
-                    url: 'wards/multiDelete', 
+                    url: '/wards/multiDelete', 
                     data:{
                         listId : listId,
                         _method:'GET',
@@ -292,7 +292,9 @@
                         }
                     },
                     error: function(data){
-
+                        $.each(data.responseJSON.errors, function(index, value){
+                            $("#addModal .alert-"+index).html(value);
+                        })
                     }
                 })
                     

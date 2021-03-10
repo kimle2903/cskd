@@ -9,6 +9,7 @@ use App\Http\Requests\PostChangeProfileRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\User;
+use App\Violate;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
@@ -134,8 +135,14 @@ class UserController extends Controller
 
     public function destroy( $id){
        $user = User::find($id);
-       if(isset($user) && $user->delete()){
-            return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
+       if(isset($user)){
+           if(Violate::where('user_decision_id', $id)->first() ||Violate::where('user_handler_id', $id)->first()){
+                return response()->json(['message'=>"Người dùng đã nằm trong kiểm tra và xử lý vi phạm.", 'status'=>204]);
+           }else{
+                $user->delete();
+                return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
+           }
+           
        }else{
             return response()->json(['message'=>"Xóa thất bại.", 'status'=>204]);
        }
@@ -145,9 +152,21 @@ class UserController extends Controller
         $listId = $request->listId;
         if(isset($listId )){
             $list = explode(",",$listId);
-            User::whereIn('id', $list)->delete();
-            return response()->json(['message'=>"Xóa thành công.", 'status'=>200]);
-
+            $check = 0;
+            foreach($list as $item){
+                $data1 = Violate::where('user_decision_id', $item)->get();
+                $data2 = Violate::where('user_handler_id', $item)->get();
+                if(count($data1)> 0 || count($data2)> 0){
+                    $check++;
+                }
+            }
+            if($check == 0){
+                User::whereIn('id', $list)->delete();
+                return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
+            }else{
+                return response()->json(['message'=>'Người dùng đã nằm trong kiểm tra và xử lý vi phạm.', 'status'=>204]);
+            }   
+       
         }else{
             return response()->json(['message'=>"Xóa thất bại.", 'status'=>204]);
         }

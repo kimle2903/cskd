@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProcessingLevelRequest;
 use App\Http\Requests\UpdateProcessingLevelRequest;
 use App\ProcessingLevel;
+use App\Violate;
 use Illuminate\Http\Request;
 
 class ProcessingLevelController extends Controller
@@ -37,8 +38,15 @@ class ProcessingLevelController extends Controller
 
     public function destroy( $id){
         $processing = ProcessingLevel::find($id);
-        if(isset($processing) && ProcessingLevel::destroy($id)){
-             return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
+        if(isset($processing)){
+             $data = Violate::where('process_level_id', $id)->get();
+             if(isset($data) && count($data)> 0){
+                 return response()->json(['message'=>'Cấp xử lý đã nằm trong kiểm tra và xử lý vi phạm.', 'status'=>204]);
+             }else{
+                $processing->delete();
+                return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
+             }
+            
         }else{
              return response()->json(['message'=>'Xóa thất bại.', 'status'=>204]);
         }
@@ -48,12 +56,20 @@ class ProcessingLevelController extends Controller
         $listId = $request->listId;
         if(isset($listId)){
             $list = explode(',',$listId);
-            if(ProcessingLevel::whereIn('id', $list)->delete()){
-                 return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
-            }else{
-                 return response()->json(['message'=>'Xóa thất bại.', 'status'=>204]);
+        
+            $check = 0;
+            foreach($list as $item){
+                $data = Violate::where('process_level_id', $item)->get();
+                if(isset($data) && count($data)> 0){
+                    $check++;
+                }
             }
-
+            if($check == 0){
+                ProcessingLevel::whereIn('id', $list)->delete();
+                return response()->json(['message'=>'Xóa thành công.', 'status'=>200]);
+            }else{
+                return response()->json(['message'=>'Cấp xử lý đã nằm trong kiểm tra và xử lý vi phạm.', 'status'=>204]);
+            }
         }else{
              return response()->json(['message'=>'Xóa thất bại.', 'status'=>204]);
         }
