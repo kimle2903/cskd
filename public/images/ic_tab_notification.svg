@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">
+  <g id="ic_tab_notification" transform="translate(-1556 -26)">
+    <g id="Ellipse_165" data-name="Ellipse 165" transform="translate(1556 26)" fill="none" stroke="#fff" stroke-width="1">
+      <circle cx="22" cy="22" r="22" stroke="none"/>
+      <circle cx="22" cy="22" r="21.5" fill="none"/>
+    </g>
+    <path id="icons8-notification" d="M11.958,2V4.688a7.343,7.343,0,0,0-5.51,7.107v6.122H21.141V11.795a7.343,7.343,0,0,0-5.51-7.107V2ZM4,20.365v2.449h7.676a2.45,2.45,0,1,0,4.235,0H23.59V20.365Z" transform="translate(1564.41 34)" fill="#fff"/>
+  </g>
+</svg>

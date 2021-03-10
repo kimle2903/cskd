@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+  <g id="ic_tick_active" transform="translate(-720 -484)">
+    <g id="Ellipse_200" data-name="Ellipse 200" transform="translate(720 484)" fill="none" stroke="#3384ff" stroke-width="2">
+      <circle cx="12.5" cy="12.5" r="12.5" stroke="none"/>
+      <circle cx="12.5" cy="12.5" r="11.5" fill="none"/>
+    </g>
+    <circle id="Ellipse_201" data-name="Ellipse 201" cx="7.5" cy="7.5" r="7.5" transform="translate(725 489)" fill="#3384ff"/>
+  </g>
+</svg>

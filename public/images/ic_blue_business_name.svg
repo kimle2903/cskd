@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+  <g id="ic_blue_business_name" transform="translate(4)">
+    <rect id="Bounds" width="35" height="35" transform="translate(-4)" fill="none"/>
+    <path id="ic_blue_business_type" d="M3.869,3V6.813L2,11.58v1.907h.935V20.16h9.347V13.487h5.608V20.16H19.76V13.487h.935V11.58L18.825,6.813V3Zm2.8,1.907a.954.954,0,1,1-.935.953A.945.945,0,0,1,6.674,4.907Zm2.8,0a.954.954,0,1,1-.935.953A.945.945,0,0,1,9.478,4.907ZM4.8,13.487h5.608v4.767H4.8Z" transform="translate(2 6)" fill="#3384ff"/>
+  </g>
+</svg>

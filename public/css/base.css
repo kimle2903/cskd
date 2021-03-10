@@ -1,0 +1,93 @@
+@font-face {
+    font-family: SFUAuchonRegular;
+    src: url(/fonts/SFUAuchonRegular.TTF);
+}
+
+@font-face {
+    font-family: SF_Compact;
+    src: url(/fonts/SF-Compact-Text-Regular.otf);
+}
+
+body {
+    font-size: 15px;
+}
+
+a {
+    text-decoration: none;
+}
+
+*:focus {
+    outline: none !important;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+ul {
+    padding: 0px;
+}
+
+button {
+    outline: none;
+}
+
+button:hover {
+    outline: none;
+}
+
+.modal-title {
+    color: #3384ff;
+}
+
+.alert-error {
+    color: #ff0000b0;
+    font-size: 15px;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+.modal-body .message,
+.modal-body .text-delete {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.btn-close {
+    padding: 6px 48px
+}
+
+.btn-cancel,
+.btn-cancel-delete {
+    background-color: #dc3545;
+}
+
+.btn-modal-reset,
+.btn-modal-save,
+.btn-cancel,
+.btn-update,
+.btn-delete-item,
+.btn-cancel-delete {
+    width: 100%;
+    color: #fff;
+    padding: 0px 12px;
+}
+
+.btn-update,
+.btn-cancel,
+.btn-delete-item,
+.btn-cancel-delete {
+    padding: 6px 12px;
+}
+
+.btn-cancel:hover {
+    background-color: #c82333;
+}
+
+.btn-modal-reset {
+    background-color: #f8671b;
+}

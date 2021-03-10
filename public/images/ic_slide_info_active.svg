@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <g id="ic_slide_info_active" transform="translate(0 0.199)">
+    <rect id="Bounds" width="40" height="40" transform="translate(0 -0.199)" fill="none"/>
+    <path id="icons8-info_popup" d="M4.908,3A1.908,1.908,0,0,0,3,4.908V18.266a1.908,1.908,0,0,0,1.908,1.908H9.679l1.908,1.908L13.5,20.174h4.771a1.908,1.908,0,0,0,1.908-1.908V4.908A1.908,1.908,0,0,0,18.266,3Zm5.725,3.816h1.908V8.725H10.633Zm0,3.816h1.908v5.725H10.633Z" transform="translate(8.962 7.279)" fill="#fff"/>
+  </g>
+</svg>
