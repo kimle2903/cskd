@@ -90,7 +90,11 @@
                        <div class="col-md-5">
                            <div class="form-group">
                                <label for="" class=""><img src="/images/ic_blue_status.svg" alt=""> <span class="title-info ">Tình trạng hoạt động </span> </label>
-                               <input type="text" name="status" id="status" class="form-control textText" value="Đang hoạt đông" disabled>
+                                <select name="status" id="status" class="form-control textText" disabled >
+                                    <option value="1">Đang hoạt động</option>
+                                    <option value="2">Ngừng hoạt động</option>
+                               </select>
+                                <div class="alert-status alert-error"></div>
 
                            </div>
                        </div>
@@ -174,6 +178,7 @@
                 changeMonth: true,
                 changeYear: true,
                 maxDate: currentDate,
+                 dateFormat: 'dd/mm/yy',
                 yearRange: "1970:{{ date('Y')"
                
             }); 
@@ -181,6 +186,7 @@
                 changeMonth: true,
                 changeYear: true,
                 maxDate: currentDate,
+                 dateFormat: 'dd/mm/yy',
                 yearRange: "1970:{{ date('Y')"
             })
            
@@ -202,6 +208,7 @@
             $("#name_user").val("");
             $("#house_hold").val("");
             $("#position_business").val("");
+            
         })
 
 

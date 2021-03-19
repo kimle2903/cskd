@@ -6,7 +6,7 @@
         <li  @if(\Request::is('business')) class="item-menu active" @else class="item-menu" @endif>
             <a href="{{url('/')}}/business" class="link-item-menu"> @if(\Request::is('business')) <img src="/images/ic_slide_info_active.svg" alt=""> @else<img src="/images/ic_slide_info_inactive.svg" alt=""> @endif   Thông tin CSKD</a>
         </li>
-        <li class="item-menu">
+        <li @if(\Request::is('violates')) class="item-menu active" @else class="item-menu" @endif>
             <a href="/violates" class="link-item-menu">  @if(\Request::is('violates')) <img src="/images/ic_slide_check_active.svg" alt=""> @else<img src="/images/ic_slide_check_inactive.svg" alt=""> @endif  Kiểm tra & xử lý vi phạm</a>
         </li>
         <li @if(\Request::is('type-investments')||\Request::is('error-violates')||\Request::is('form-violates')|| \Request::is('processing-levels')||\Request::is('districts')||\Request::is('wards')||\Request::is('users')||\Request::is('department')||\Request::is('roles')) class="item-menu governance active" @else class="item-menu governance" @endif>

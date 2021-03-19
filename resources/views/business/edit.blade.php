@@ -90,10 +90,12 @@
                        <div class="col-md-5">
                            <div class="form-group">
                                <label for="" class=""><img src="/images/ic_blue_status.svg" alt=""> <span class="title-info ">Tình trạng hoạt động </span> </label>
+                               
                                 <select name="status" id="status" class="form-control textText" >
-                                   <option value="1">Đang hoạt động</option>
-                                   <option value="0">Tạm dừng hoạt động</option>
+                                    <option value="1">Đang hoạt động</option>
+                                    <option value="2">Ngừng hoạt động</option>
                                </select>
+                                <div class="alert-status alert-error"></div>
                            </div>
                        </div>
                    </div>
@@ -230,20 +232,21 @@
         
             console.log(busines,user);
             $(".alert-error").html("");
-            $("#name").val(busines['name']);
-            $("#type-investment-id").val(busines['type_investment_id']).trigger('change');
-            $("#district_id").val(busines['district_id']).trigger('change');
-            $("#ward_id").val(busines['ward_id']).trigger('change');
-            $("#status").val(busines['status']).trigger('change');
-            $("#address").val(busines['address']);
-            $("#code").val(busines['code']);
-            $("#day_register").val(busines['day_register']);
-            $("#number_people").val(busines['number_people']);
-            $("#mumber_certificate").val(busines['number_certificate']);
-            $("#day_mumber_certificate").val(busines['day_number_certificate']);
-            $("#name_user").val(user['name']);
-            $("#house_hold").val(user['house_hold']);
-            $("#position_business").val(user['position_business']);
+            // $("#name").val(busines['name']);
+            // $("#type-investment-id").val(busines['type_investment_id']).trigger('change');
+            // $("#district_id").val(busines['district_id']).trigger('change');
+            // $("#ward_id").val(busines['ward_id']).trigger('change');
+            // $("#status").val(busines['status']).trigger('change');
+            // $("#address").val(busines['address']);
+            // $("#code").val(busines['code']);
+            // $("#day_register").val(busines['day_register']);
+            // $("#number_people").val(busines['number_people']);
+            // $("#mumber_certificate").val(busines['number_certificate']);
+            // $("#day_mumber_certificate").val(busines['day_number_certificate']);
+            // $("#name_user").val(user['name']);
+            // $("#house_hold").val(user['house_hold']);
+            // $("#position_business").val(user['position_business']);
+            location.reload();
             // alert($("#ward_id").val());
         })
 
@@ -263,6 +266,7 @@
                name_user: $("#name_user").val(),
                house_hold:$("#house_hold").val(),
                position_business: $("#position_business").val(),
+               status: $("#status").val()
            }
            $.ajaxSetup({
                 headers: {

@@ -184,8 +184,154 @@
             </div>
         </div>
     </div>
+
+    {{-- filter  --}}
+    <div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">BỘ LỌC</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Từ ngày</div>
+                    <div class="col-7">
+                        <input type="text" name="start_day" id="start_day" class="form-control textTxt textText" placeholder="Nhập ngày" autocomplete="off">
+                    </div>
+                </div>
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Đến ngày</div>
+                    <div class="col-7">
+                        <input type="text" name="end_day" id="end_day" class="form-control textTxt textText" placeholder="Nhập ngày" autocomplete="off">
+                    </div>
+                </div>
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Hình thức xử lý VP</div>
+                    <div class="col-7">
+                        <select name="form_violate_id" id="form_violate_id" class="form-control textTxt textText">
+                            <option value="0">-- Chọn  --</option>
+                            @foreach ($form_violates as $form_violate)
+                                  <option value="{{$form_violate->id}}">{{$form_violate->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Lỗi VP</div>
+                    <div class="col-7">
+                        <select name="error_violate_id" id="error_violate_id" class="form-control textTxt textText">
+                            <option value="0">-- Chọn -- </option>
+                            @foreach ($error_violates as $error_violate)
+                                  <option value="{{$error_violate->id}}">{{$error_violate->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Loại hình đầu tư</div>
+                    <div class="col-7">
+                        <select name="type_investment_id" id="type_investment_id" class="form-control textTxt textText" >
+                            <option value="0">--Chọn--</option>
+                            @foreach ($type_investments as  $type_investment)
+                                  <option value="{{$type_investment->id}}">{{$type_investment->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                     
+                </div> 
+                <div class="row form-group mb-1">
+                    <div class="col-5 department-label">Tình trạng xử lý VP</div>
+                    <div class="col-7">
+                        <select name="status" id="status" class="form-control textTxt textText" >
+                            <option value="0">--Chọn--</option>
+                            <option value="1">Chưa xử lý</option>
+                            <option value="2">Đã xử lý</option>
+                           
+                        </select>
+                    </div>
+                     
+                </div>  
+                <div class="alert-error text-center mb-5"></div>
+                   
+                 <div class="row">
+                    <div class="col-md-5 offset-md-1">
+                        <button class="btn btn-modal-reset"><img src="images/ic_btn_white_reset.svg" alt="ic_btn_white_reset"> Nhập lại</button>
+
+                    </div>
+                    <div class="col-md-5 ">
+                        <button class="btn btn-primary btn-modal-save" id="btn-filter"> <img src="images/ic_btn_white_save.svg" alt="ic_btn_white_save">Lọc</button>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+        </div>
+    </div>
+
     <script>
         $('document').ready(function(){
+
+            // #filter
+            $("#form_violate_id").select2();
+            $("#error_violate_id").select2();
+            $("#type_investment_id").select2();
+            $("#status").select2();
+
+            var currentDate = new Date();
+            $("#start_day").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                maxDate: currentDate,
+                dateFormat: 'dd/mm/yy',
+                
+            });
+            $("#end_day").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                maxDate: currentDate,
+                dateFormat: 'dd/mm/yy',
+                
+            });
+
+            $("#btn-filter").click(function(){
+                var start_day = $("#start_day").val();
+                var end_day = $("#end_day").val();
+                
+                if(start_day != ''){
+                    if(!start_day.match(dateRegex)){
+                        $(".alert-error").text("Xin vui lòng nhập ngày hợp lệ ");
+                        return
+                    }else{
+                        var arr = start_day.split("/");
+                        start_day = arr[2] + "/" + arr[1]  + '/' + arr[0];
+                    }
+                   
+                }
+                if(end_day != ''){
+                    if(!end_day.match(dateRegex)){
+                        $(".alert-error").text("Xin vui lòng nhập ngày hợp lệ ");
+                        return
+                    }else{
+                        var arr = end_day.split("/");
+                        end_day = arr[2] + "/" + arr[1]  + '/' + arr[0];
+                    }
+                   
+                }
+                if(start_day != '' && end_day != ''){
+                    if(new Date(start_day) >  new Date(end_day)){
+                        $(".alert-error").text("Xin vui lòng nhập ngày hợp lệ ");
+                        return
+                    }
+                }
+
+                dataTable.draw();
+                $("#filter").modal("hide");
+                $(".alert-error").text("");
+            })
+
 
             $(".btn-modal-reset").click(function(){
                 $("#processing-level-name").val("");
@@ -398,11 +544,19 @@
                 },
                 drawCallback: function(){
                     addEventListener();
+                },
+                fnServerParams: function(aoData){
+                    aoData.start_day = $("#filter #start_day").val().trim();
+                    aoData.end_day = $("#filter #end_day").val().trim();
+                    aoData.form_violate_id = $("#filter #form_violate_id").val();
+                    aoData.error_violate_id = $("#filter #error_violate_id").val();
+                    aoData.type_investment_id = $("#filter #type_investment_id").val();
+                    aoData.status = $("#filter #status").val();
                 }
               
 
             })
-            dataTable.draw();
+           
             var check = true;
             function addEventListener(){
                 var html = '';
@@ -478,6 +632,13 @@
                     })
                 })
 
+                if(!$("button").hasClass("btn-loc")){
+                     $("#nameTable_length").append('<button type="button" class="btn btn-secondary btn-loc"> <img src="/images/ic_tool_filter_white.svg" /> LỌC</button>');
+                }
+
+                $(".btn-loc").click(function(){
+                    $("#filter").modal('show');
+                })
             }
            
         })

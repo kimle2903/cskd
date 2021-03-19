@@ -8,6 +8,7 @@ use App\FormViolate;
 use App\Http\Requests\StoreViolateRequest;
 use App\Http\Requests\UpdateViolateRequest;
 use App\ProcessingLevel;
+use App\TypeInvestment;
 use App\User;
 use App\Violate;
 use Illuminate\Http\Request;
@@ -17,7 +18,10 @@ use Illuminate\Support\Facades\Auth;
 class ViolateController extends Controller
 {
     public function index(){
-        return view('violate.list');
+        $form_violates = FormViolate::all();
+        $error_violates = ErrorViolate::all();
+        $type_investments = TypeInvestment::all();
+        return view('violate.list', compact('form_violates','error_violates','type_investments'));
     }
 
     public function create(){
@@ -77,8 +81,38 @@ class ViolateController extends Controller
         }
     }
 
-    public function getDataAjax(){
-        $data = Violate::all();
+    public function getDataAjax(Request $request){
+       
+        $start_day = strtr($request->start_day, '/', '-');
+        $end_day = strtr($request->end_day, '/', '-');
+        
+        
+        $data = Violate::where('status', '>', 0);
+        if($start_day != ''){
+            $start_day = date ('Y-m-d 00:00:00',strtotime($start_day));
+            $data->where('created_at', '>', $start_day);
+        }
+        if($end_day != ''){
+            $end_day = date ('Y-m-d 23:59:59',strtotime($end_day));
+            $data->where('created_at', '<', $end_day);
+        }
+        if($request->form_violate_id != 0){
+            $data->where("form_violate_id",$request->form_violate_id );
+        }
+        if($request->error_violate_id != 0){
+            $data->where("error_violate_id",$request->error_violate_id );
+        }
+        if($request->type_investment_id != 0){
+            $busines = Busines::where("type_investment_id",$request->error_violate_id  )->get('id');
+            $data->whereIn("busines_id", $busines );
+        }
+        if($request->status != 0){
+           
+             $data->where("status",$request->status );
+        }
+        
+        // if($request->form_violate_id != 0)
+        $data = $data->orderBy('id', 'desc')->get();
         return datatables()->of($data)
         ->addColumn('action', function($data){
             return $data->id;

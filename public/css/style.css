@@ -363,3 +363,12 @@
         display: table-cell;
         vertical-align: middle !important;
     }
+    
+    #nameTable_length .btn-loc {
+        margin-left: 10px;
+        padding: 2px 12px;
+    }
+    
+    #nameTable_length .btn-loc img {
+        width: 23px;
+    }

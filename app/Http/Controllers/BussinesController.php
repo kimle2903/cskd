@@ -10,11 +10,13 @@ use App\User;
 use App\Violate;
 use App\Ward;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BussinesController extends Controller
 {
     public function index(){
-        return view('business.list');
+         $districts = District::all();
+        return view('business.list', compact('districts'));
     }
 
     public function create(){
@@ -78,7 +80,7 @@ class BussinesController extends Controller
         $busines->number_people = $request->number_people;
         $busines->number_certificate = $request->number_certificate;
         $busines->day_number_certificate = $request->day_number_certificate;
-        $busines->status = 1;
+        $busines->status = $request->status;
         $busines->save();
          return response()->json(['message'=>"Cập nhật thành công", 'status'=>200]);
 
@@ -96,7 +98,30 @@ class BussinesController extends Controller
     }
 
     public function getDataAjax(Request $request){
-        $data = Busines::orderBy('id', 'desc')->get();
+    //    dd($request->all());
+        $start_day = strtr($request->start_day, '/', '-');
+        $end_day = strtr($request->end_day, '/', '-');
+        $data = Busines::where('status', '>', 0);
+        if($request->start_day != null){
+            $start_day =  date ('Y-d-m 00:00:00',strtotime($start_day));
+            $data->where('created_at', '>', $start_day);
+        }
+        if($request->end_day != null){
+            $end_day =  date('Y-d-m 23:59:59',strtotime($end_day));
+            $data->where('created_at', '<', $end_day);
+        }
+        if($request->district != 0){
+            $data->where('district_id', '=', $request->district);
+        }
+        if($request->ward != 0){
+            $data->where('ward_id', '=', $request->ward);
+        }
+         if($request->status != 0){
+            $data->where('status', '=', $request->status);
+        }
+
+        $data = $data->orderBy('id', 'desc')->get();
+    
         return datatables()->of($data)
         ->addColumn('action', function($data){
             return $data->id;

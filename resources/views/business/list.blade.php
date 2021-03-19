@@ -33,6 +33,7 @@
                     <div class="col-12">
                         <div class="mb-5">
                             <a href="/business/create" class="btn btn-primary add-new"> <img src="images/ic_tool_add.svg" alt="ic_tool_add.svg"> <span>THÊM MỚI</span> </a>
+                          
                            
                         </div>
                     </div>
@@ -139,8 +140,103 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">BỘ LỌC</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Từ ngày</div>
+                    <div class="col-7">
+                        <input type="text" name="start_day" id="start_day" class="form-control textTxt textText" placeholder="Nhập ngày" autocomplete="off">
+                    </div>
+                </div>
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Đến ngày</div>
+                    <div class="col-7">
+                        <input type="text" name="end_day" id="end_day" class="form-control textTxt textText" placeholder="Nhập ngày" autocomplete="off">
+                    </div>
+                </div>
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Quận huyện</div>
+                    <div class="col-7">
+                        <select name="distruct" id="district" class="form-control textTxt textText">
+                            <option value="0">-- Chọn quận huyện --</option>
+                            @foreach ($districts as $district)
+                                  <option value="{{$district->id}}">{{$district->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group mb-3">
+                    <div class="col-5 department-label">Phuờng xã</div>
+                    <div class="col-7">
+                        <select name="ward" id="ward" class="form-control textTxt textText" disabled>
+                            <option value="0">Phải chọn quận huyện trước</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group mb-1">
+                    <div class="col-5 department-label">Tình trạng hoạt động</div>
+                    <div class="col-7">
+                        <select name="status" id="status" class="form-control textTxt textText" >
+                            <option value="0">Tất cả</option>
+                            <option value="1">Đang hoạt động</option>
+                            <option value="2">Tạm dừng hoạt động</option>
+                        </select>
+                    </div>
+                     
+                </div>  
+                <div class="alert-error text-center mb-5"></div>
+                   
+                 <div class="row">
+                    <div class="col-md-5 offset-md-1">
+                        <button class="btn btn-modal-reset"><img src="images/ic_btn_white_reset.svg" alt="ic_btn_white_reset"> Nhập lại</button>
+
+                    </div>
+                    <div class="col-md-5 ">
+                        <button class="btn btn-primary btn-modal-save" id="btn-filter"> <img src="images/ic_btn_white_save.svg" alt="ic_btn_white_save">Lọc</button>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+        </div>
+    </div>
+
     <script>
         $('document').ready(function(){
+
+            var dateRegex = /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
+            var currentDate = new Date();
+            $("#filter #start_day").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                maxDate: currentDate,
+                dateFormat: 'dd/mm/yy',
+                
+            });
+            $("#filter #end_day").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                maxDate: currentDate,
+                dateFormat: 'dd/mm/yy',
+            });
+
+            $("#filter #district").select2();
+            $("#filter #ward").select2();
+
+            // Xử lý lọc 
+
+          
+
+            
            $("#nameTable th input").keyup(function() {
                 var name = $(this).val();
                 if (name.length > 0) {
@@ -231,6 +327,76 @@
                     }
                 })
 
+            })
+
+            $("#filter #district").change(function(){
+                var district_id = $(this).val();
+                if(district_id == 0){
+                     $("#filter #ward").val('0');
+                    $("#filter #ward").attr('disabled', true);
+                }else{
+                    $("#filter #ward").attr('disabled', false);
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: "{{url('/')}}/business/getDataById",
+                        data:{
+                           id: district_id, 
+                        }, 
+                        method: "POST", 
+                        success: function(data){
+                            $("#filter #ward").html(data);
+                        }, 
+                        error: function(data){
+
+                        }
+                        
+                    })
+
+                }
+            })
+
+            $("#btn-filter").click(function(){
+                $(".alert-error").text("");
+                
+                var  start_day = $("#start_day").val().trim();
+                var  end_day = $("#end_day").val().trim();
+                if(start_day != ''){
+                    if(start_day.match(dateRegex)){
+                        var arr = start_day.split("/");
+                        start_day = arr[2]+'/'+arr[1]+'/'+arr[0];
+                    
+                    }else{
+                        $(".alert-error").text("Thời gian nhập chưa đúng. Xin kiểm tra lại.");
+                        return 
+                    }
+                }
+                if(end_day != ''){
+                    if(end_day.match(dateRegex)){
+                        var arr = end_day.split("/");
+                        end_day = arr[2]+'/'+arr[1]+'/'+arr[0];
+                    
+                    }else{
+                        $(".alert-error").text("Thời gian nhập chưa đúng. Xin kiểm tra lại.");
+                        return
+                    }
+                }
+                if(start_day != '' && end_day != ''){
+                    if(new Date(end_day) < new Date(start_day)){
+                        $(".alert-error").text("Xin vui lòng nhập ngày hợp lệ.");
+                        return
+                    }
+                }
+
+                dataTable.draw();
+                $("#filter").modal('hide');
+                $("#start_day").val("");
+                $("#end_day").val("");
+
+                
             })
 
             var dataObject = [
@@ -332,13 +498,20 @@
                     infoFiltered: '',
                     sInfoEmpty: "",
                 },
+                fnServerParams:function(aoData){
+                    aoData.start_day = $("#filter #start_day").val().trim();
+                    aoData.end_day = $("#filter #end_day").val().trim();
+                    aoData.district = $("#filter #district").val().trim();
+                    aoData.ward = $("#filter #ward").val().trim();
+                    aoData.status = $("#filter #status").val();
+                },
                 drawCallback: function(){
                     addEventListener();
                 }
+               
               
 
             })
-            dataTable.draw();
             var check = true;
             function addEventListener(){
                 var html = '';
@@ -395,7 +568,17 @@
                     }
                     
                 })
+                if(!$("button").hasClass("btn-loc")){
+                     $("#nameTable_length").append('<button type="button" class="btn btn-secondary btn-loc"> <img src="/images/ic_tool_filter_white.svg" /> LỌC</button>');
+                }
+               
+
+                $(".btn-loc").click(function(){
+                    $("#filter").modal('show');
+                })
             }
+
+                
            
         })
     </script>
